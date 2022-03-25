@@ -118,7 +118,31 @@ for (i in 1:length(sample_small)) {
         
         ###insert scraping the actual data
         #gotta check if the table is blank
-        #if (remote_driver$findElement())
+        #data scraping
+        #gotta check if the table is blank
+        if (length(remote_driver$findElements(using = "css selector", 
+                                              "body > center:nth-child(1) > table:nth-child(13) > tbody:nth-child(1) > tr:nth-child(5)"))
+            != 0) {
+          
+          disp_table <-remote_driver$getPageSource()[[1]]%>% 
+            read_html() %>% 
+            html_nodes("table") %>% 
+            html_table()
+          
+          disp_history <- as.data.frame(disp_table[[11]]) 
+          complaint_disposition <- rbind(complaint_disposition, disp_history)
+          
+        } else {
+          #body > center:nth-child(1) > table:nth-child(2) > tbody:nth-child(1)
+          disp_table <-remote_driver$getPageSource()[[1]]%>% 
+            read_html() %>% 
+            html_nodes("table") %>% 
+            html_table()
+          
+          disp_comments <- as.data.frame(disp_table[[8]]) 
+          complaint_disp_small <- rbind(complaint_disp_small, disp_comments)
+        }
+        
         
         #after it's done scraping it goes back to the complaint table 
         remote_driver$goBack()
@@ -172,7 +196,7 @@ for (i in 1:length(sample_small)) {
                             error = function(e){NULL})
       }
       
-      ###insert scraping the actual data
+     #data scraping
       #gotta check if the table is blank
       if (length(remote_driver$findElements(using = "css selector", 
                                             "body > center:nth-child(1) > table:nth-child(13) > tbody:nth-child(1) > tr:nth-child(5)"))
