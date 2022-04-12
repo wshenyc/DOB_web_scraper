@@ -11,14 +11,6 @@ numextract <- function(string){
   str_extract(string, "\\-*\\d+\\.*\\d*")
 } 
 
-##----test data----
-test_data <- read_csv("DOB_Complaints_Received.csv") 
-sample_small <- test_data$BIN[1:5] #let's cut down the size for now 
-
-##----remote screen set up----
-rd <- rsDriver(browser = c("firefox"), port = 4555L)
-remote_driver <- rd[["client"]]
-
 ##----initializing dataframes & variables----
 complaint_disposition <- data.frame()
 complaint_disp_small <- data.frame()
@@ -26,12 +18,20 @@ complaint_disp_small <- data.frame()
 bis_url <- ""
 webElem <- NULL 
 
+##----test data----
+test_data <- read_csv("~/Downloads/dob_vacates_20220411.csv") 
+test_bins <- test_data[151:195,]$bin
+
+##----remote screen set up----
+rd <- rsDriver(browser = c("firefox"), port = 4565L)
+remote_driver <- rd[["client"]]
+
 ##----actual for loop scraping----
 
-for (i in 1:length(sample_small)) {
+for (i in 1:length(test_bins)) {
   #navigate to the respective BIN's DOB page 
   bis_url <- paste("https://a810-bisweb.nyc.gov/bisweb/PropertyProfileOverviewServlet?bin=",
-                   sample_small[i],"&go4=+GO+&requestid=0", sep="")
+                   test_bins[i],"&go4=+GO+&requestid=0", sep="")
   
   remote_driver$navigate(bis_url)
   
@@ -385,6 +385,62 @@ for (i in 1:length(sample_small)) {
 
 }#master for loop closure
 
-########################################################
-##----let's test some stuff----
 
+#saving the results for the first 1:46 buildings
+complaint_disp_small_one <- complaint_disp_small
+complaint_disposition_one <- complaint_disposition
+
+# complaint_disp_small_one %>% write_csv("complaint_disp_small_one.csv")
+# complaint_disposition_one %>% write_csv("complaint_disposition_one.csv")
+
+#saving the results for 47:71 buildings
+complaint_disp_small_two <- complaint_disp_small
+complaint_disposition_two <- complaint_disposition
+
+# complaint_disp_small_two %>% write_csv("complaint_disp_small_two.csv")
+# complaint_disposition_two %>% write_csv("complaint_disposition_two.csv")
+
+#saving the results for 71:90 buildings
+complaint_disp_small_three <- complaint_disp_small
+complaint_disposition_three <- complaint_disposition
+
+# complaint_disp_small_three %>% write_csv("complaint_disp_small_three.csv")
+# complaint_disposition_three %>% write_csv("complaint_disposition_three.csv")
+
+#saving the results for 91:110 buildings
+complaint_disp_small_four <- complaint_disp_small
+complaint_disposition_four <- complaint_disposition
+
+# complaint_disp_small_four %>% write_csv("complaint_disp_small_four.csv")
+# complaint_disposition_four %>% write_csv("complaint_disposition_four.csv")
+
+#saving the results for 111:150 buildings
+complaint_disp_small_five <- complaint_disp_small
+complaint_disposition_five <- complaint_disposition
+
+# complaint_disp_small_five %>% write_csv("complaint_disp_small_five.csv")
+# complaint_disposition_five %>% write_csv("complaint_disposition_five.csv")
+
+#saving the results for 151:195 buildings
+complaint_disp_small_six <- complaint_disp_small
+complaint_disposition_six <- complaint_disposition
+
+complaint_disp_small_six %>% write_csv("complaint_disp_small_six.csv")
+complaint_disposition_six %>% write_csv("complaint_disposition_six.csv")
+
+complaint_disposition <- rbind(complaint_disposition_one,
+                               complaint_disposition_two,
+                               complaint_disposition_three,
+                               complaint_disposition_four,
+                               complaint_disposition_five,
+                               complaint_disposition_six)
+
+complaint_disp_small <- rbind(complaint_disp_small_one,
+                              complaint_disp_small_two,
+                              complaint_disp_small_three,
+                              complaint_disp_small_four,
+                              complaint_disp_small_five,
+                              complaint_disp_small_six)
+
+complaint_disposition %>% write_csv("conh_complaint_disposition.csv")
+complaint_disp_small %>% write_csv("conh_complaint_disposition_small.csv")
